@@ -22,6 +22,32 @@ module FakeStripe
       IO.read(file_path) + IO.read(mock_file_path)
     end
 
+    get '/checkout' do
+      #generate a fake token from stripe as if the user entered a card
+      StripeMock.start
+      token = StripeMock.generate_card_token(last4: '4242', exp_year: 2020)
+      "$(document).ready(function() {
+        $('#addCardForm').replaceWith(function() {
+          return \"<div id='stripeForm'></div>\";
+        });
+        $(\"<input type='hidden' id='stripeToken' name='stripeToken' value='#{token}'>\").appendTo('#stripeForm');
+        $(\"<input name='commit' type='submit' value='Submit'/>\").appendTo('#stripeForm');
+      });"
+    end
+
+    get '/v2/checkout' do
+      #generate a fake token from stripe as if the user entered a card
+      StripeMock.start
+      token = StripeMock.generate_card_token(last4: '4242', exp_year: 2020)
+      "$(document).ready(function() {
+        $('#addCardForm').replaceWith(function() {
+          return \"<div id='stripeForm'></div>\";
+        });
+        $(\"<input type='hidden' id='stripeToken' name='stripeToken' value='#{token}'>\").appendTo('#stripeForm');
+        $(\"<input name='commit' type='submit' value='Submit'/>\").appendTo('#stripeForm');
+      });"
+    end
+
     def self.boot(port = FakeStripe::Utils.find_available_port)
       instance = new
       Capybara::Server.new(instance, port).tap { |server| server.boot }
@@ -34,5 +60,10 @@ module FakeStripe
     def self.server_port
       @@stripe_js_port ||= FakeStripe::Utils.find_available_port
     end
+
+    def self.test
+      puts 'hello'
+    end
+
   end
 end
