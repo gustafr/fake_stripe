@@ -38,3 +38,4 @@ module FakeStripe
 end
 
 STRIPE_JS_HOST = "http://localhost:#{FakeStripe::StubStripeJS.server_port}"
+STRIPE_CHECKOUT_HOST = "http://localhost:#{FakeStripe::StubStripeJS.server_port}"
